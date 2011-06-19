@@ -596,7 +596,7 @@ stdin.on('end', function() {
   console.log("done")
   process.stdout.flush()
 })
-*//
+*/
 
 exports.TerminalSM=Statemachine
 
