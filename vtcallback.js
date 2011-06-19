@@ -10,6 +10,10 @@ function dummy(name) {
 function print (char) {
   console.log(String.fromCharCode(char))
 }
+
+// This is the terminal interface. It describes all the things that
+// can possibly happen. Implement eveything you are interested in.
+
 Terminal = function(){}
 Terminal.prototype = {
     "print"          : print 

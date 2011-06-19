@@ -1,24 +1,65 @@
+// vt100 (or similiar) statemachine.
+// please have a look at (http://vt100.net/emu/dec_ansi_parser) to follow along.
 
+
+// utilities to save typing
 noop = function(){}
 between = function(val, min, max) {
   return (val >= min) && (val <=max)
 }
+
+//
+// Every state in the SM has it's own class that defines it's behaviour
+// There are are a number of `events` that happen to the State:
+//   entry : when the state is first entered
+//   exit  : when a transition to another state occurs
+//   characters : the actual data being send to the terminal is received
+//
+// There are also transition events that occur after the exit of the current
+// state an before the entry of the next event.
+//
+// State objects handle calling their own exit and transition event
+// actions, the SM itself handles calling entry actions.
+//
+// Any event may be associated with some action.
+// When an action occurs, the statemachine calls a callback, which
+// recieves an object of the following form:
+//  { 
+//    "what"       : // the action, see below,
+//    which        : // the current character,
+//    intermediate : // collected intermediate chars,
+//    params       : // the collected params
+//  }
+//
+// What may be one of:
+//  |print | |
+//  |execute | | 
+//  |esc | | 
+//  |csi | |
+//  |dcs_hook| |
+//  |dcs_put| |
+//  |dcs_unhook| |
+//  |ocs_start||
+//  |ocs_put| | 
+//  |ocs_end| |
+// 
+//
 State = {
-  Anywhere           : {name: "Anywhere", entry:noop},
-  Ground             : {name: "Ground",   entry:noop},
-  Escape             : {name: "Escape",   entry:noop},
+  Anywhere           : {name: "Anywhere",           entry:noop},
+  Ground             : {name: "Ground",             entry:noop},
+  Escape             : {name: "Escape",             entry:noop},
   EscapeIntermediate : {name: "EscapeIntermediate", entry:noop},
-  CSIEntry           : {name: "CSIEntry", entry:noop},
-  CSIParam           : {name: "CSIParam", entry:noop},
-  CSIIntermediate    : {name: "CSIIntermediate", entry:noop},
-  CSIIgnore          : {name: "CSIIgnore", entry:noop},
-  DCSEntry           : {name: "DCSEntry", entry:noop},
-  DCSParam           : {name: "DCSParam", entry:noop},
-  DCSIntermediate    : {name: "DCSIntermediate", entry:noop},
-  DCSPassthrough     : {name: "DCSPassthrough", entry:noop},
-  DCSIgnore          : {name: "DCSIgnore", entry:noop},
-  OSCString          : {name: "OSCString", entry:noop},
-  SOS_PM_APCString   : {name: "SOS_PM_APCString", entry:noop},
+  CSIEntry           : {name: "CSIEntry",           entry:noop},
+  CSIParam           : {name: "CSIParam",           entry:noop},
+  CSIIntermediate    : {name: "CSIIntermediate",    entry:noop},
+  CSIIgnore          : {name: "CSIIgnore",          entry:noop},
+  DCSEntry           : {name: "DCSEntry",           entry:noop},
+  DCSParam           : {name: "DCSParam",           entry:noop},
+  DCSIntermediate    : {name: "DCSIntermediate",    entry:noop},
+  DCSPassthrough     : {name: "DCSPassthrough",     entry:noop},
+  DCSIgnore          : {name: "DCSIgnore",          entry:noop},
+  OSCString          : {name: "OSCString",          entry:noop},
+  SOS_PM_APCString   : {name: "SOS_PM_APCString",   entry:noop},
 }
 
 State.Anywhere.execute = function(ctx) {
@@ -66,7 +107,7 @@ State.Ground.execute = function(ctx) {
   ) {
     ctx.execute()
     return State.Ground;
-  } else if (between(ctx.c, 0x20, 0x7F)) {
+  } else if (between(ctx.c, 0x20, 0x7F)) { // does not handle utf8!
     ctx.print  ()
     return State.Ground;
   }
@@ -397,6 +438,11 @@ State.SOS_PM_APCString.execute = function(ctx) {
 
 
 
+// 
+// Context is responsible for keeping track of state
+// and collecting intermediate characters, params, etc.
+// Furthermore it calls the callback method at the approriate time.
+//
 
 function Context (callback) {
   this.cb = callback
@@ -503,9 +549,9 @@ var log = function (msg) {
 }
 
 function Statemachine (cb) {
-  this.context = new Context(cb)
+  this.context    = new Context(cb)
   this.context.sm = this
-  this.state   = State.Ground
+  this.state      = State.Ground
 
   this.execute = function(str) {
     for (var i = 0; i!= str.length; ++i) {
@@ -524,7 +570,7 @@ function Statemachine (cb) {
   }
 }
 
-
+/**
 function callback (cb_data) {
   switch (cb_data.what) {
     case "print":
@@ -550,3 +596,7 @@ stdin.on('end', function() {
   console.log("done")
   process.stdout.flush()
 })
+*//
+
+exports.TerminalSM=Statemachine
+
