@@ -4,20 +4,24 @@ terminal.js
 Javascript handling for terminal io. Presently implements the DEC/ANSI
 terminal statemachine described
 [here](http://vt100.net/emu/dec_ansi_parser) You'll need to understand
-the statemachine descirbed there to use this code.  As most of this
+the statemachine described there to use this code.  As most of this
 terminal stuff is not exactly mainstream knowledge, you'll probably also
 want to read the VT100 Userguide available
 [here](http://vt100.net/docs/vt100-ug/)
 
+Caveat: statemachine works fine, infrastructure is very very dirty and
+I'm only publishing it here for backup and in case someone is really
+looking for it and willing to clenan it up for me :)
+
 Using
 =====
 
-    // hookup callbacks, there is a callback for every `action` (see below) of
-    //   the statemachine
+    // provide a callback that handles the SM's actions,
+    // see below for details.
     var callback = {...}
     
     // create a Statemachine
-    var term_sm = new Statemachine(callbacks)
+    var term_sm = new Statemachine(callback)
 
     // get data from somewhere
     while (var bla = readTerminalData()) {
@@ -25,7 +29,7 @@ Using
       term_sm.execute(bla)
     }
 
-Available Callbacks / Actions
+Callback / Actions
 =============================
 
 The statemachine is provided a callback by the user. This callback gets
@@ -57,9 +61,16 @@ action is currently being executed. Available actions are:
     |ocs_put| | 
     |ocs_end| |
 
-vtcallback.js provides a default callback that interprets the esc, csi,
-etc. calls to some degree and forwards them to a terminal
+These are still fairly lowlevel and require an in depth understanding of
+temrinal arcana. A.k.a. this is most likely not what you'll want to
+implement.
+
+`vtcallback.js` provides a default callback that interprets the esc, csi,
+etc. actions to some degree and forwards them to a terminal
 implementation, described below.
+
+Have a look at `test.js` to get an idea of how to set things up.
+
 
 Terminal Interface 
 ==================
@@ -94,6 +105,9 @@ following interface:
     | setLED         |set LEDs, see LEDS for params                             |
 
 
+`vtcallbacks.js` provides a default terminal implementation that does
+nothing but print everything provided to `print` to stdout and renders
+control codes.
 
     
 
@@ -101,10 +115,25 @@ following interface:
 TODO
 ====
 
-more or less everything
+more or less everything. Please be aware that this code is very likely
+to change or possibly be abandoned :)
+
+Any help would be greatly appreciated.
+
+The module infrastructure is more or less node-centric (ok, common.js)
+at this point, though no node.js `Buffer`s are used, so it should be
+useable in a browser with minimal effort.
+
+Concerning the statemachine itself, the implementation is quite
+complete. Most likely, some work will need to go into multibyte
+characters as the sm doesn't really take utf8 into account.
 
 
 LICENSE
 =======
 
 MIT License (c) Tim Becker 2011
+
+
+# vim: set tw=72:
+
