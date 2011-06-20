@@ -12,8 +12,8 @@ want to read the VT100 Userguide available
 Using
 =====
 
-    // hookup callbacks, there is a callback for every `action` (see below) of
-    //   the statemachine
+    // provide a callback that handles the SM's actions,
+    // see below for details.
     var callback = {...}
     
     // create a Statemachine
@@ -25,7 +25,7 @@ Using
       term_sm.execute(bla)
     }
 
-Available Callbacks / Actions
+Callback / Actions
 =============================
 
 The statemachine is provided a callback by the user. This callback gets
@@ -57,9 +57,16 @@ action is currently being executed. Available actions are:
     |ocs_put| | 
     |ocs_end| |
 
-vtcallback.js provides a default callback that interprets the esc, csi,
+These are still fairly lowlevel and require an in depth understanding of
+temrinal arcana. A.k.a. this is most likely not what you'll want to
+implement.
+
+`vtcallback.js` provides a default callback that interprets the esc, csi,
 etc. calls to some degree and forwards them to a terminal
 implementation, described below.
+
+Have a look at `test.js` to get an idea of how to set things up.
+
 
 Terminal Interface 
 ==================
@@ -94,6 +101,9 @@ following interface:
     | setLED         |set LEDs, see LEDS for params                             |
 
 
+`vtcallbacks.js` provides a default terminal implementation that does
+nothing but print everything provided to `print` to stdout and renders
+control codes.
 
     
 
@@ -101,7 +111,14 @@ following interface:
 TODO
 ====
 
-more or less everything
+more or less everything. Please be aware that this code is very likely
+to change or possibly be abandoned :)
+
+Any help would be greatly appreciated.
+
+Concerning the statemachine itself, the implementation is quite
+complete. Most likely, some work will need to go into multibyte
+characters as the sm doesn't really take utf8 into account.
 
 
 LICENSE
