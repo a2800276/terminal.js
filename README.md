@@ -46,16 +46,16 @@ Actions
 The "what" field of the object passed to the callback describes what
 action is currently being executed. Available actions are:
 
-|print | |
-|execute | | 
-|esc | | 
-|csi | |
-|dcs_hook| |
-|dcs_put| |
-|dcs_unhook| |
-|ocs_start||
-|ocs_put| | 
-|ocs_end| |
+    |print | |
+    |execute | | 
+    |esc | | 
+    |csi | |
+    |dcs_hook| |
+    |dcs_put| |
+    |dcs_unhook| |
+    |ocs_start||
+    |ocs_put| | 
+    |ocs_end| |
 
 vtcallback.js provides a default callback that interprets the esc, csi,
 etc. calls to some degree and forwards them to a terminal
@@ -68,30 +68,30 @@ A terminal will be connected to the the callbacks an supported the
 following interface:
 
 
-| print          | print a character to the current current cursor position |
-| newline        | newline                                                  |
-| carriagereturn | carriagereturn                                           |
-| cursorMode     | cursorMode,  "Application" or "Cursor"                   |
-| vt52           | vt52                                                     |
-| setColumns     | setColumns,  132 or 80                                   |
-| setScrolling   | setScrolling, "Smooth" or "Jump"                         |
-| setScreenMode  | setScreenMode, "Reverse" or "Normal"                     |
-| setOriginMode  | setOriginMode,  "Relative" or "Absolute"                 |
-| wraparound     | wraparound                                               |
-| autorepeat     | autorepeat, bool                                         |
-| setLFMode      | setLFMode, "NL" or "LF"                                  |
-| keypadMode     | keypadMode, "Application" or "Numeric"                   |
-| setTopAndBottomMargin | This sequence sets the top and bottom margins to define the scrolling region. s. DECSTBM |
-| setSGR         |setSGR, Select Graphic Rendition, see SGR for params      |
-| setCursor      |setCursor                                                 |
-| erase          |clear screen, see ED for params                           |
-| eraseLine      |eraseLine, clear line, see EL for params                  |
-| cursorForward  |move cursor forward                                       |
-| cursorBack     |move cursor backward                                      |
-| cursorDown     |move cursor down                                          |
-| cursorUp       |move cursor up                                            |
-| clearTab       |clear tab, see TABC for params                            |
-| setLED         |set LEDs, see LEDS for params                             |
+    | print          | print a character to the current current cursor position |
+    | newline        | newline                                                  |
+    | carriagereturn | carriagereturn                                           |
+    | cursorMode     | cursorMode,  "Application" or "Cursor"                   |
+    | vt52           | vt52                                                     |
+    | setColumns     | setColumns,  132 or 80                                   |
+    | setScrolling   | setScrolling, "Smooth" or "Jump"                         |
+    | setScreenMode  | setScreenMode, "Reverse" or "Normal"                     |
+    | setOriginMode  | setOriginMode,  "Relative" or "Absolute"                 |
+    | wraparound     | wraparound                                               |
+    | autorepeat     | autorepeat, bool                                         |
+    | setLFMode      | setLFMode, "NL" or "LF"                                  |
+    | keypadMode     | keypadMode, "Application" or "Numeric"                   |
+    | setTopAndBottomMargin | This sequence sets the top and bottom margins to define the scrolling region. s. DECSTBM |
+    | setSGR         |setSGR, Select Graphic Rendition, see SGR for params      |
+    | setCursor      |setCursor                                                 |
+    | erase          |clear screen, see ED for params                           |
+    | eraseLine      |eraseLine, clear line, see EL for params                  |
+    | cursorForward  |move cursor forward                                       |
+    | cursorBack     |move cursor backward                                      |
+    | cursorDown     |move cursor down                                          |
+    | cursorUp       |move cursor up                                            |
+    | clearTab       |clear tab, see TABC for params                            |
+    | setLED         |set LEDs, see LEDS for params                             |
 
 
 
